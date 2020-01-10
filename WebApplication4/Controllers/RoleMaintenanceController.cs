@@ -78,6 +78,11 @@ namespace WebApplication4.Controllers
                     viewModel.ListB = roles2;
                     return View("Modify", viewModel);
                 }
+                else if (roles2.Count() == 0)
+                {
+                    viewModel.ListB = roles2;
+                    return View("Index", viewModel);
+                }
                 else
                 {
                     roles2 = db.Roles.ToList();
@@ -87,19 +92,56 @@ namespace WebApplication4.Controllers
             }
             else if (button == "Menu")
             {
-                return View("Index", viewModel);
+                viewModel.ListA = roles;
+                ArrayList checkList = new ArrayList();
+                roles2.Clear();
+                var checkRoleAll = form["checkAll"];
+                foreach (var role in roles)
+                {
+                    var checkRole = form[role.RoleID.ToString()];
+                    if (checkRole == "on")
+                    {
+                        roles2.Add(db.Roles.Where(r => r.RoleID == role.RoleID).FirstOrDefault());
+                    }
+                }
+                System.Diagnostics.Debug.WriteLine(roles2.Count());
+                if (roles2.Count() == 1)
+                {
+                    viewModel.ListB = roles2;
+                    return View("Menu", viewModel);
+                }
+                else if (roles2.Count() == 0) {
+                    viewModel.ListB = roles2;
+                    return View("Index", viewModel);
+                } else
+                {
+                    roles2 = db.Roles.ToList();
+                    viewModel.ListB = roles2;
+                    return View("Index", viewModel);
+                }  
             }
             else if (button == "Delete")
             {
-                string name = Request.Form["demo"];
-                if (name == "Delete-Y")
+                viewModel.ListA = roles;
+                ArrayList checkList = new ArrayList();
+                roles2.Clear();
+                var checkRoleAll = form["checkAll"];
+                Role dropRole = new Role();
+                foreach (var role in roles)
                 {
-                    return RedirectToAction("Index", "Login");
+                    var checkRole = form[role.RoleID.ToString()];
+                    if (checkRole == "on")
+                    {
+                        dropRole = db.Roles.Where(r => r.RoleID == role.RoleID).FirstOrDefault();
+                        db.Roles.Remove(dropRole);
+                    }
                 }
-                else
-                {
-                    return RedirectToAction("Index", "UserMaintenance");
-                }
+                db.SaveChanges();
+                roles = db.Roles.ToList();
+                roles2 = db.Roles.ToList();
+                viewModel.ListA = roles;
+                viewModel.ListB = roles2;
+                return View("Index", viewModel);
             }
             return View("Index", viewModel);
         }

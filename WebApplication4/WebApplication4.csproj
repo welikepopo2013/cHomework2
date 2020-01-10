@@ -290,6 +290,7 @@
     <Content Include="Views\RoleMaintenance\Add.cshtml" />
     <Content Include="Views\RoleMaintenance\Delete.cshtml" />
     <Content Include="Views\RoleMaintenance\Modify.cshtml" />
+    <Content Include="Views\RoleMaintenance\Menu.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
