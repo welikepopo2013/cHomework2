@@ -1,0 +1,21 @@
+﻿@model WebApplication4.Models.LoginInfo
+@{
+    Layout = null;
+    if (Session["LoginID"] == null)
+    {
+        Response.Redirect("~/Login/Index");
+    }
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+</head>
+<body>
+    <div>
+    </div>
+</body>
+</html>
