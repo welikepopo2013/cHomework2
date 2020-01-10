@@ -40,6 +40,7 @@ namespace WebApplication4.Controllers
 
             if (button == "Query")
             {
+
                 if (selectRole == "All")
                 {
                     viewModel.ListA = roles;
