@@ -42,5 +42,7 @@ namespace WebApplication4.Models
 
         public List<Role> ListA { get; set; }
         public List<Role> ListB { get; set; }
+        public List<Menu> ListMenu { get; set; }
+        public List<Menu> AllMenu { get; set; }
     }
 }

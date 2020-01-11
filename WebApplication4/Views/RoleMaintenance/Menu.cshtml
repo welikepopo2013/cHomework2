@@ -114,13 +114,14 @@
 
     <div class="main">
         <h2>Role Maintenance</h2>
-        @using (Html.BeginForm("function", "RoleMaintenance", FormMethod.Post))
+        @using (Html.BeginForm("Menu", "RoleMaintenance", FormMethod.Post))
         {
             <table>
                 <tr>
-                    <td>Role</td>
-                    <td></td>
-                    <td></td>
+                <tr>
+                    <td>@Html.LabelFor(model => model.RoleName)</td>
+                    <td><input name="Origin-Role-Name" value=@Model.ListB.First().RoleName /></td>
+                </tr>
                 </tr>
             </table>
             <table name="RoleTable">
@@ -138,14 +139,36 @@
                     <td></td>
                     <td> Status</td>
                 </tr>
-                @foreach (var item in Model.ListB)
-                {
 
+
+
+                @foreach (var item in Model.AllMenu)
+                {
                     <tr>
-                        <td><input type="checkbox" name=@item.RoleID.ToString()></td>
-                        <td>@item.RoleName</td>
+                        @if (Model.ListMenu.Contains(item))
+                        {
+                            <td><input type="checkbox" name=@item.MenuNo.ToString() checked></td>
+                        }
+                        else
+                        {
+                            <td><input type="checkbox" name=@item.MenuNo.ToString()></td>
+                        }
+                        <td>@item.MenuNo</td>
                         <td></td>
-                        <td>@item.RoleDescription</td>
+                        <td>@item.MenuLevel</td>
+                        <td></td>
+                        <td>@item.LinkName</td>
+                        <td></td>
+                        @if (@item.LinkType == 0)
+                        {
+                            <td>Menu</td>
+                        }
+                        else
+                        {
+                            <td>Program</td>
+                        }
+                        <td></td>
+                        <td>@item.LinkURL</td>
                         <td></td>
                         @if (@item.Status == 0)
                         {
@@ -155,16 +178,16 @@
                         {
                             <td>Y</td>
                         }
-                        <td></td>
-                        <td>@item.CreateDate.ToString().AsDateTime().ToString("yyyy/MM/dd")</td>
-                        <td></td>
-                        <td>@item.CreateUser</td>
-                        <td></td>
-                        <td>@item.ModifyDate.ToString().AsDateTime().ToString("yyyy/MM/dd")</td>
-                        <td></td>
-                        <td>@item.ModifyUser</td>
                     </tr>
                 }
+            </table>
+            <table>
+                <tr>
+                    <td>
+                        <input type="submit" name="name" value="Save" />
+                        <input type="button" value="Back" onclick="history.back()">
+                    </td>
+                </tr>
             </table>
 
         }

@@ -36,6 +36,7 @@ namespace WebApplication4.Controllers
             int loginID = (int)Session["LoginID"];
             var userInfo = db.Users.Where(l => l.UserID == loginID).FirstOrDefault();
             string userName = userInfo.UserName;
+
             ViewBag.UserNmae = userName;
 
             if (button == "Query")
@@ -92,33 +93,43 @@ namespace WebApplication4.Controllers
             }
             else if (button == "Menu")
             {
+                List<Menu> MenuList = new List<Menu>();
+                MenuList = db.Menus.ToList();
+
                 viewModel.ListA = roles;
-                ArrayList checkList = new ArrayList();
                 roles2.Clear();
                 var checkRoleAll = form["checkAll"];
                 foreach (var role in roles)
                 {
+                    var RoleTest = viewModel.Menus.ToList();
+
+                    
                     var checkRole = form[role.RoleID.ToString()];
                     if (checkRole == "on")
                     {
                         roles2.Add(db.Roles.Where(r => r.RoleID == role.RoleID).FirstOrDefault());
                     }
                 }
-                System.Diagnostics.Debug.WriteLine(roles2.Count());
                 if (roles2.Count() == 1)
                 {
+                    var RoleTest = roles2.First().Menus.ToList();
                     viewModel.ListB = roles2;
+                    viewModel.ListMenu = RoleTest;
+                    viewModel.AllMenu = MenuList; 
+
                     return View("Menu", viewModel);
                 }
-                else if (roles2.Count() == 0) {
+                else if (roles2.Count() == 0)
+                {
                     viewModel.ListB = roles2;
                     return View("Index", viewModel);
-                } else
+                }
+                else
                 {
                     roles2 = db.Roles.ToList();
                     viewModel.ListB = roles2;
                     return View("Index", viewModel);
-                }  
+                }
             }
             else if (button == "Delete")
             {
@@ -134,14 +145,25 @@ namespace WebApplication4.Controllers
                     {
                         dropRole = db.Roles.Where(r => r.RoleID == role.RoleID).FirstOrDefault();
                         db.Roles.Remove(dropRole);
-                    }
+                        db.SaveChanges();
+                    }               
                 }
-                db.SaveChanges();
-                roles = db.Roles.ToList();
-                roles2 = db.Roles.ToList();
-                viewModel.ListA = roles;
-                viewModel.ListB = roles2;
-                return View("Index", viewModel);
+                //roles2 = db.Roles.ToList();
+                if (roles2.Count() == 0)
+                {
+                    viewModel.ListB = roles2;
+                    return View("Index", viewModel);
+                }
+                else
+                {
+                    db.SaveChanges();
+                    roles = db.Roles.ToList();
+                    roles2 = db.Roles.ToList();
+                    viewModel.ListA = roles;
+                    viewModel.ListB = roles2;
+                    return View("Index", viewModel);
+                }
+
             }
             return View("Index", viewModel);
         }
@@ -215,6 +237,60 @@ namespace WebApplication4.Controllers
             roles2 = db.Roles.ToList();
             viewModel.ListA = roles;
             viewModel.ListB = roles2;
+
+            return View("Index", viewModel);
+        }
+
+        public ActionResult Menu(FormCollection form, Role role)
+        {
+            var roles = db.Roles.ToList();
+            var roles2 = db.Roles.ToList();
+            var viewModel = new Role();
+            viewModel.ListA = roles;
+            viewModel.ListB = roles2;
+            List<Menu> MenuList = new List<Menu>();
+            MenuList = db.Menus.ToList();
+
+            String roleName = form["Origin-Role-Name"];
+
+            Role select_role = db.Roles.SingleOrDefault(r => r.RoleName == roleName);
+
+            var Role_Menu = select_role.Menus.ToList();
+
+            Menu saveRoleMenu = new Menu();
+            Role saveMenuRole = new Role();
+            foreach (var menu in Role_Menu)
+            {
+                var checkMenu_delete = form[menu.MenuNo];
+                if (checkMenu_delete == null)
+                {
+                    saveRoleMenu = db.Roles.Where(r => r.RoleName == roleName).FirstOrDefault().Menus.Where(m => m.MenuNo == menu.MenuNo).FirstOrDefault();
+                    db.Roles.Where(r => r.RoleName == roleName).FirstOrDefault().Menus.Remove(saveRoleMenu);
+                    db.SaveChanges();
+                } 
+            }
+            foreach (var menu in MenuList) {
+                var checkMenu_add = form[menu.MenuNo];
+                if (checkMenu_add == "on") {
+                    System.Diagnostics.Debug.WriteLine(menu.Roles.Count);
+                    if (!db.Menus.Where(m => m.MenuNo == menu.MenuNo).FirstOrDefault().Roles.Contains(select_role))
+                    {
+                        db.Menus.Where(m => m.MenuNo == menu.MenuNo).FirstOrDefault().Roles.Add(select_role);
+                        db.SaveChanges();
+                        System.Diagnostics.Debug.WriteLine(db.Menus.Where(m => m.MenuNo == menu.MenuNo).FirstOrDefault().LinkName);
+                        System.Diagnostics.Debug.WriteLine(select_role.RoleName);
+                    }
+                }
+            }
+            //System.Diagnostics.Debug.WriteLine(Role_Menu.Count());
+
+            //foreach (var menu in Role_Menu) {
+            //    System.Diagnostics.Debug.WriteLine(menu.MenuNo);
+            //}
+            //System.Diagnostics.Debug.WriteLine(roleName);
+            //test = db.Roles.Where(r => r.RoleName == roleName).FirstOrDefault();
+            //System.Diagnostics.Debug.WriteLine(test);
+            
 
             return View("Index", viewModel);
         }
