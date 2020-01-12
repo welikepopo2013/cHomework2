@@ -77,6 +77,27 @@
             float: right;
             padding-right: 8px;
         }
+
+        table {
+            border-spacing: 0;
+            width: 100%;
+            border: 1px solid #ddd;
+        }
+
+        th {
+            cursor: pointer;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 16px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2
+        }
+
+
     </style>
 </head>
 <body>
@@ -116,6 +137,12 @@
         <h2>Role Maintenance</h2>
         @using (Html.BeginForm("function", "RoleMaintenance", FormMethod.Post))
         {
+            if (TempData["SelectionMessage"] != null)
+            {
+                <script>
+                alert('@TempData["SelectionMessage"]');
+                </script>
+            }
             <table>
                 <tr>
                     <td>Role</td>
@@ -137,26 +164,28 @@
                     <td><input type="submit" name="button" value="Add" /></td>
                     <td><input type="submit" name="button" value="Modify" /></td>
                     <td><input type="submit" name="button" value="Menu" /></td>
-                    <td><input type="submit" name="button" value="Delete" onclick= "myFunction()" id="demo"/></td>
+                    <td><input type="submit" name="button" value="Delete" onClick = "return confirm('Press a button!')" /></td>
+                    
                 </tr>
             </table>
-        
-            <table name="RoleTable">
+
+
+            <table id="RoleTable">
                 <tr>
-                    <td><input type="checkbox" name="checkAll" ></td>
-                    <td> Role Name</td>
+                    <td><input type="checkbox" name="checkAll"></td>
+                    <th onclick="sortTable(0)"> Role Name</th>
                     <td></td>
-                    <td> Role Description</td>
+                    <th onclick="sortTable(1)"> Role Description</th>
                     <td></td>
-                    <td> Status</td>
+                    <th onclick="sortTable(2)"> Status</th>
                     <td></td>
-                    <td> Create Date</td>
+                    <th onclick="sortTable(3)"> Create Date</th>
                     <td></td>
-                    <td> Create User</td>
+                    <th onclick="sortTable(4)"> Create User</th>
                     <td></td>
-                    <td> Modify Date</td>
+                    <th onclick="sortTable(5)"> Modify Date</th>
                     <td></td>
-                    <td> Modify User</td>
+                    <th onclick="sortTable(6)"> Modify User</th>
                 </tr>
                 @foreach (var item in Model.ListB)
                 {
@@ -227,13 +256,61 @@
             }
         }
 
-        function myFunction() {
-            var txt;
-            var r = confirm("Press a button!");
-           
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("RoleTable");
+            switching = true;
+            //Set the sorting direction to ascending:
+            dir = "asc";
+            /*Make a loop that will continue until
+            no switching has been done:*/
+            while (switching) {
+                //start by saying: no switching is done:
+                switching = false;
+                rows = table.rows;
+                /*Loop through all table rows (except the
+                first, which contains table headers):*/
+                for (i = 1; i < (rows.length - 1); i++) {
+                    //start by saying there should be no switching:
+                    shouldSwitch = false;
+                    /*Get the two elements you want to compare,
+                    one from current row and one from the next:*/
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    /*check if the two rows should switch place,
+                    based on the direction, asc or desc:*/
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            //if so, mark as a switch and break the loop:
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    /*If a switch has been marked, make the switch
+                    and mark that a switch has been done:*/
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    //Each time a switch is done, increase this count by 1:
+                    switchcount++;
+                } else {
+                    /*If no switching has been done AND the direction is "asc",
+                    set the direction to "desc" and run the while loop again.*/
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
         }
+
     </script>
 </body>
 </html>
-
-@*@Url.Action("UserMaintain", "SystemSetup"*@

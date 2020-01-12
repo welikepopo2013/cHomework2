@@ -288,7 +288,6 @@
     <Content Include="Views\UserMaintenance\Index.cshtml" />
     <Content Include="Views\MenuMaintenance\Index.cshtml" />
     <Content Include="Views\RoleMaintenance\Add.cshtml" />
-    <Content Include="Views\RoleMaintenance\Delete.cshtml" />
     <Content Include="Views\RoleMaintenance\Modify.cshtml" />
     <Content Include="Views\RoleMaintenance\Menu.cshtml" />
     <None Include="Web.Debug.config">

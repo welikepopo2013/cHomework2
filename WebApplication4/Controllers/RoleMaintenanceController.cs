@@ -82,12 +82,14 @@ namespace WebApplication4.Controllers
                 else if (roles2.Count() == 0)
                 {
                     viewModel.ListB = roles2;
+                    TempData["SelectionMessage"] = "Plese select atleast one role to modify.";
                     return View("Index", viewModel);
                 }
                 else
                 {
                     roles2 = db.Roles.ToList();
                     viewModel.ListB = roles2;
+                    TempData["SelectionMessage"] = "Plese modify one role at a time.";
                     return View("Index", viewModel);
                 }
             }
@@ -122,12 +124,14 @@ namespace WebApplication4.Controllers
                 else if (roles2.Count() == 0)
                 {
                     viewModel.ListB = roles2;
+                    TempData["SelectionMessage"] = "Plese atleast one role to modify its menu list.";
                     return View("Index", viewModel);
                 }
                 else
                 {
                     roles2 = db.Roles.ToList();
                     viewModel.ListB = roles2;
+                    TempData["SelectionMessage"] = "Plese modify one role's menu list at a time.";
                     return View("Index", viewModel);
                 }
             }
@@ -163,7 +167,6 @@ namespace WebApplication4.Controllers
                     viewModel.ListB = roles2;
                     return View("Index", viewModel);
                 }
-
             }
             return View("Index", viewModel);
         }
@@ -282,15 +285,6 @@ namespace WebApplication4.Controllers
                     }
                 }
             }
-            //System.Diagnostics.Debug.WriteLine(Role_Menu.Count());
-
-            //foreach (var menu in Role_Menu) {
-            //    System.Diagnostics.Debug.WriteLine(menu.MenuNo);
-            //}
-            //System.Diagnostics.Debug.WriteLine(roleName);
-            //test = db.Roles.Where(r => r.RoleName == roleName).FirstOrDefault();
-            //System.Diagnostics.Debug.WriteLine(test);
-            
 
             return View("Index", viewModel);
         }
